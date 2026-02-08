@@ -66,7 +66,7 @@ function draw() {
   const c1 = lerpColor(currentPair[1], nextPair[1], t);
 
   const cx = w * dpr / 2, cy = h * dpr / 2;
-  const r = Math.min(w, h) * dpr * 0.5;
+  const r = Math.max(w, h) * dpr * 0.5;
 
   const ratios = [];
   for (let i = 0; i <= gradientSteps; i++) {
@@ -80,11 +80,12 @@ function draw() {
     const col = lerpColor(c0, c1, st);
     grad.addColorStop(easeInOut(st), col);
   }
+  grad.addColorStop(1, '#000000');
 
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
   ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
 
   if (fadeProgress >= 1) startFade();
   requestAnimationFrame(draw);
