@@ -29,11 +29,30 @@ canvas { display: block; width: 100%; height: 100%; }
   z-index: 1;
   letter-spacing: 0.05em;
 }
+#contact {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  z-index: 1;
+}
+#contact a {
+  color: rgba(255,255,255,0.25);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+#contact a:hover {
+  color: rgba(255,255,255,0.6);
+}
 </style>
 </head>
 <body>
 <canvas></canvas>
 <div id="poem"></div>
+<div id="contact"><a href="mailto:hello@signal26.ai">hello@signal26.ai</a></div>
 <script>
 const cvs = document.querySelector('canvas');
 const ctx = cvs.getContext('2d');
