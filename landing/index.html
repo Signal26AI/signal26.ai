@@ -1,71 +1,19 @@
-<!DOCTYPE html>
 <!-- Inspired by the generative art of Rafael Rozendaal -->
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Signal26</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #000; overflow: hidden; }
-canvas { display: block; position: fixed; top: 0; left: 0; }
+html { height: 100%; }
+body { min-height: 100%; margin: 0; padding: 0; }
+canvas { padding: 0; margin: auto; display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
+<canvas></canvas>
 <script>
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-const palette = [
-  [0,0,0], [0,255,136], [0,204,102], [0,77,38], [153,255,204], [0,255,170]
-];
-let mx = 0.5, my = 0.5, t = 0;
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-
-document.addEventListener('mousemove', e => {
-  mx = e.clientX / window.innerWidth;
-  my = e.clientY / window.innerHeight;
-});
-
-function lerp(a, b, f) {
-  return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f];
-}
-
-function rgb(c) {
-  return `rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;
-}
-
-function draw() {
-  t += 0.003;
-  const w = canvas.width, h = canvas.height;
-  const maxR = Math.sqrt(w*w + h*h) * 0.75;
-  const cx = w/2 + (mx - 0.5) * w * 0.08;
-  const cy = h/2 + (my - 0.5) * h * 0.08;
-  const bands = 12;
-  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
-
-  for (let i = 0; i <= bands; i++) {
-    const pos = i / bands;
-    const phase = (pos + t) % 1;
-    const idx = phase * palette.length;
-    const a = palette[Math.floor(idx) % palette.length];
-    const b = palette[Math.ceil(idx) % palette.length];
-    const frac = idx - Math.floor(idx);
-    const col = lerp(a, b, frac);
-    grad.addColorStop(pos, rgb(col));
-  }
-
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, w, h);
-  requestAnimationFrame(draw);
-}
-draw();
+let tokenData = {"tokenId":"20000006","hash":"0x2010b18daf4d67292d2b7c23462ec599d1ca55d8b9fea5f503438b9c0c509db2"};
+let o=Math,r=window,l=o.pow,F=Math.max,t=Math.min,e=document,s=Math.ceil,c=o.random,V="20231122.143422",C={};C.o="#000000#FFFFFF#ED1E79#BFFFFF#FFFF9B#29ABE2#B8FFDE#D8D2FF#FCCDFF#000099#00FFFF#662D91#008D3A#333333#BF0644#00007F#FF0000#FF00FF#0000FF#00CCFF#6AFEFF#C4E9FB#FF4AD2#FFFF00#600091#666666#FF9900#006837#999999#AAAAAA#CCCCCC#3D00A8#222222#00008B#0071BC#00A7A8#6F00B5#808080#FC90FF".match(/.{7}/g),C.l={inner:[{o:[19,10,5,20,6,3,21,7,8,17,22,4,1],F:[4,5,6]},{o:[20,22,23,1]},{o:[6,3,7,8,4]},{o:[10,6,7,8,1]},{o:[19,5,3,21,1]},{o:[10,17,23,1]},{o:[10,6,3,7,2,8,4,1]},{o:[0,9,12,5,13,11,14,2]},{o:[28,29,3,30,2,1]},{o:[1]},{o:[0]},{o:[4]}],t:[{o:[0,15,9,18,12,5,13,24,25,6,14,3,7,2,8,16,26,4],F:[4,5,6]},{o:[0,15,12,24,16]},{o:[15,27,11,2,26]},{o:[6,3,7,8,4]},{o:[0,15,5,11,2]},{o:[0,9,11,14]},{o:[0,18,16]},{o:[0,9,12,5,13,11,14,2]},{o:[0,9,13,25]},{o:[0,9,31,32]},{o:[0]}]},C.u=[{o:[33,18,27,34,10,35,36,37,2,16,17,1,38,4],F:[3,4,5,6,7]}],C.C=[.2,.3],C.margin=.1,C.A=5e-4,C.i=o=>l(o,2),C.D=r=>(r*=2)<1?C.i(r)/2:1-C.i(2-r)/2;let n={B:(o,r)=>(null!=r&&(o=o.filter((o=>-1==r.indexOf(o)))),o[c()*o.length>>0]),p:(o,r)=>n.h(o.slice()).slice(0,r),h:o=>{let r,l,F;for(F=o.length;F;F--)r=c()*F>>0,l=o[F-1],o[F-1]=o[r],o[r]=l;return o},M:o=>{let r=4022871197,l=2.3283064365386963e-10;var F=o=>{o=String(o);for(let l=0;l<o.length;l++)r+=o.charCodeAt(l),F=r<<13,r^=F,r=(r/4294967296+.5)*(2*r|1),F=52.98292*r,r=F>>>0,F-=r,r+=4294967296*F;return(r>>>0)*l};let t=1,e=F(" "),s=F(" "),c=F(" ");return e-=F(o),e<0&&(e+=1),s-=F(o),s<0&&(s+=1),c-=F(o),c<0&&(c+=1),()=>{const o=2091639*e+t*l;return e=s,s=c,c=o-(t=0|o)}}};let u,a,A,i,D,f,B=(o,r,l)=>{let[F,t,e]=d(o),[s,c,n]=d(r);return"#"+(((s-F)*l+F<<16)+((c-t)*l+t<<8)+((n-e)*l+e)|0).toString(16).padStart(6,"0")},d=o=>o.slice(-6).match(/.{2}/g).map((o=>parseInt(o,16)));e.body.style.overflow="hidden";let p,h,E,M,g,m,k=o=>{g=parseInt(tokenData.tokenId.slice(-6));let r=C.S?C.S[g%C.S.length]:tokenData.hash;c=n.M(r),u=c()<.5;let t=c()<.5?C.l.inner:C.l.t,s=t[Math.floor(c()*t.length)];a=I(s),A=c()<.5?I(C.u[0]):I(t[Math.floor(c()*t.length)]),i=c()<.5?["#000000"]:I(C.u[0]),D=C.C[0]+c()*(C.C[1]-C.C[0]),f=[];let e=o||5;for(;e-- >0;)e=v(e);w()},v=o=>{let r,l,F,t=f[0];u?(F=a.filter((o=>o!=t?.g)),r=n.B(F.length?F:a),F=A.filter((o=>o!=r&&o!=t?.m)),l=n.B(F.length?F:A)):l=r=n.B(i,[t?.g]);let e={k:D,g:r,m:l};return e.v=o-e.k,f.unshift(e),e.v},I=o=>{let{o:r,F:l}=o;if(l){let o=n.B(l);r=n.p(r,o)}return r.map((o=>C.o[o]))},w=()=>{for(f.forEach((o=>{o.v+=C.A/2})),f[0].v>0&&v(f[0].v);f.at(-2).v>=1;)f.pop()},x=r=>{let l=E/2,e=o.hypot(l,M)*(1+C.margin),s=[],c=[],n=(o,r,l)=>{let e=f.at(o),n=f.at(r),u=e.v,a=n.v,A=B(e.g,e.m,C.D(F(0,t(1,u)))),i=B(n.g,n.m,C.D(F(0,t(1,a))));c.push(l),s.push(B(A,i,(l-u)/(a-u)))};n(0,1,0);for(let o=1;o<f.length-1;o++){let r=f.at(o);n(o,o+1,r.v)}c.push(1),s.push(s[s.length-1]);for(let r=s.length-1;r>=0;r--){let F=p.createRadialGradient(l,M,e*c[r],l,M,e*c[r+1]);F.addColorStop(0,s[r]),F.addColorStop(1,s[r+1]),p.fillStyle=F,p.beginPath(),p.arc(l,M,e*c[r+1],0,o.PI*2),p.fill()}},S=o=>{x(),requestAnimationFrame(S)},_=r.onresize=o=>{let l=r.innerWidth,F=r.innerHeight,t=r.devicePixelRatio;l&&(E=s(l*t),M=s(F*t),p.scale(t,t),h.width=E,h.height=M,h.style.width=l+"px",h.style.height=F+"px")};r.onload=()=>{h=e.querySelector("canvas"),h.style.margin="0",p=h.getContext("2d"),k(),_(),setInterval(w,34),S()};
 </script>
 </body>
 </html>
