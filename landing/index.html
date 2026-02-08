@@ -66,7 +66,7 @@ function draw() {
   const c1 = lerpColor(currentPair[1], nextPair[1], t);
 
   const cx = w * dpr / 2, cy = h * dpr / 2;
-  const r = Math.max(w, h) * dpr * 0.5;
+  const r = Math.hypot(w, h) * dpr * 0.5;
 
   const ratios = [];
   for (let i = 0; i <= gradientSteps; i++) {
@@ -92,7 +92,6 @@ function draw() {
 }
 
 window.addEventListener('resize', resize);
-window.addEventListener('click', () => { fadeProgress = 0.95; });
 resize();
 currentPair = pairs[0];
 nextPair = pickNext();
