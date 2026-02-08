@@ -1,54 +1,93 @@
+<!DOCTYPE html>
 <!-- Inspired by the generative art of Rafael Rozendaal -->
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Signal26</title>
 <style>
-*{margin:0;padding:0}body{background:#000000;overflow:hidden;cursor:crosshair}
-canvas{display:block}
-#links{position:fixed;bottom:24px;width:100%;text-align:center;z-index:1;font:13px/1 'Helvetica Neue',sans-serif;letter-spacing:.5px}
-#links a{color:rgba(240,240,240,.45);text-decoration:none;transition:color .3s}
-#links a:hover{color:#00ffaa}
-#links span{color:rgba(240,240,240,.2);margin:0 10px}
-</style></head><body>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
+canvas { display: block; position: fixed; top: 0; left: 0; }
+#title {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; letter-spacing: 0.15em;
+  color: #00ff88; opacity: 0.17; pointer-events: none; z-index: 1;
+  text-transform: uppercase;
+}
+#links {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; gap: 1.5rem; font-size: 0.9rem;
+}
+#links a {
+  color: #00ff88; text-decoration: none; opacity: 0.5;
+  transition: opacity 0.3s;
+}
+#links a:hover { opacity: 1; }
+#links span { color: #004d26; opacity: 0.4; }
+</style>
+</head>
+<body>
 <canvas id="c"></canvas>
-<div id="links"><a href="https://shiplint.dev">ShipLint</a><span>·</span><a href="https://shippolicy.dev">ShipPolicy</a></div>
+<div id="title">Signal26</div>
+<div id="links">
+  <a href="https://shiplint.com">ShipLint</a>
+  <span>·</span>
+  <a href="https://shippolicy.com">ShipPolicy</a>
+</div>
 <script>
-const C=document.getElementById('c'),X=C.getContext('2d');
-const P=[[0,0,0],[0,255,170],[0,200,130],[150,255,220],[0,240,180]];
-let W,H,mx=.5,my=.5,t=0;
-function resize(){W=C.width=innerWidth;H=C.height=innerHeight}
-resize();addEventListener('resize',resize);
-addEventListener('mousemove',e=>{mx+=(e.clientX/W-mx)*.08;my+=(e.clientY/H-my)*.08});
-addEventListener('touchmove',e=>{const p=e.touches[0];mx+=(p.clientX/W-mx)*.08;my+=(p.clientY/H-my)*.08},{passive:true});
-function lerp(a,b,t){return a.map((v,i)=>v+(b[i]-v)*t)}
-function col(r,g,b,a){return`rgba(${r|0},${g|0},${b|0},${a})`}
-function draw(){
-  t+=.0015;
-  const cx=W/2+(mx-.5)*W*.12,cy=H/2+(my-.5)*H*.12;
-  const R=Math.max(W,H)*.75;
-  X.fillStyle='#000000';X.fillRect(0,0,W,H);
-  for(let i=26;i>=0;i--){
-    const r=R*(i/26);if(r<1)continue;
-    const phase=t+i*.15;
-    const idx=(phase%P.length+P.length)%P.length;
-    const fi=idx|0,ni=(fi+1)%P.length,frac=idx-fi;
-    const c=lerp(P[fi],P[ni],frac);
-    const pulse=.6+.4*Math.sin(t*2+i*.25);
-    const g=X.createRadialGradient(cx,cy,r*.1,cx,cy,r);
-    g.addColorStop(0,col(c[0],c[1],c[2],pulse*.9));
-    g.addColorStop(1,col(c[0],c[1],c[2],0));
-    X.fillStyle=g;X.fillRect(0,0,W,H);
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const palette = [
+  [0,0,0], [0,255,136], [0,204,102], [0,77,38], [153,255,204], [0,255,170]
+];
+let mx = 0.5, my = 0.5, t = 0;
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX / window.innerWidth;
+  my = e.clientY / window.innerHeight;
+});
+
+function lerp(a, b, f) {
+  return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f];
+}
+
+function rgb(c) {
+  return `rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;
+}
+
+function draw() {
+  t += 0.003; // half speed
+  const w = canvas.width, h = canvas.height;
+  const maxR = Math.sqrt(w*w + h*h) * 0.75;
+  const cx = w/2 + (mx - 0.5) * w * 0.08;
+  const cy = h/2 + (my - 0.5) * h * 0.08;
+  const bands = 12;
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
+
+  for (let i = 0; i <= bands; i++) {
+    const pos = i / bands;
+    const phase = (pos + t) % 1;
+    const idx = phase * palette.length;
+    const a = palette[Math.floor(idx) % palette.length];
+    const b = palette[Math.ceil(idx) % palette.length];
+    const frac = idx - Math.floor(idx);
+    const col = lerp(a, b, frac);
+    grad.addColorStop(pos, rgb(col));
   }
-  // glow
-  const glow=X.createRadialGradient(cx,cy,0,cx,cy,R*.15);
-  glow.addColorStop(0,'rgba(0,255,170,.12)');glow.addColorStop(1,'rgba(0,255,170,0)');
-  X.fillStyle=glow;X.fillRect(0,0,W,H);
-  // text
-  const s=Math.min(W,H);
-  X.save();X.globalAlpha=.18+.06*Math.sin(t*1.5);
-  X.font=`${s*.045}px 'Helvetica Neue',Arial,sans-serif`;
-  X.fillStyle='#f0f0f0';X.textAlign='center';X.textBaseline='middle';
-  X.fillText('Signal26',cx,cy);X.restore();
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
   requestAnimationFrame(draw);
 }
 draw();
-</script></body></html>
+</script>
+</body>
+</html>
