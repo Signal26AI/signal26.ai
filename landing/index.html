@@ -11,17 +11,23 @@ html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; background: 
 canvas { display: block; width: 100%; height: 100%; }
 #poem {
   position: fixed;
-  bottom: 40px;
-  left: 40px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-family: 'Courier New', monospace;
-  font-size: 16px;
-  line-height: 1.8;
-  color: rgba(255,255,255,0.15);
-  white-space: pre;
+  font-size: clamp(24px, 5vw, 64px);
+  font-weight: bold;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 0 20px rgba(255,255,255,0.4), 0 0 40px rgba(255,255,255,0.2);
+  text-align: center;
+  text-transform: uppercase;
+  white-space: pre-line;
   opacity: 0;
-  animation: fadePoem 3s ease-in 4s forwards;
+  animation: fadePoem 4s ease-in 3s forwards;
   pointer-events: none;
   z-index: 1;
+  letter-spacing: 0.05em;
 }
 @keyframes fadePoem {
   to { opacity: 1; }
@@ -30,11 +36,11 @@ canvas { display: block; width: 100%; height: 100%; }
 </head>
 <body>
 <canvas></canvas>
-<div id="poem">the greatest
-  evolution
-    in software
-      has just
-        begun.</div>
+<div id="poem">THE GREATEST
+EVOLUTION
+IN SOFTWARE
+HAS JUST
+BEGUN.</div>
 <script>
 const cvs = document.querySelector('canvas');
 const ctx = cvs.getContext('2d');
