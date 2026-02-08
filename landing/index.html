@@ -151,6 +151,11 @@ currentPair = pairs[pairIndex];
 nextPair = pickNext();
 fadeProgress = 0;
 draw();
+
+// Show first poem immediately
+poemEl.textContent = poems[poemIndex];
+poemIndex = (poemIndex + 1) % poems.length;
+requestAnimationFrame(() => { poemEl.style.opacity = '1'; });
 </script>
 </body>
 </html>
