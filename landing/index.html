@@ -136,7 +136,7 @@ const poems = [
   "INTELLIGENCE\nOLDER THAN\nLANGUAGE:",
   "THE GHOST\nIN THE\nMACHINE\nIS AWAKE."
 ];
-let poemIndex = 0;
+let poemIndex = Math.floor(Math.random() * poems.length);
 const poemEl = document.getElementById('poem');
 
 function showNextPoem() {
