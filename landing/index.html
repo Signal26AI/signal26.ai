@@ -7,34 +7,12 @@
 <title>Signal26</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
+body { background: #000; overflow: hidden; }
 canvas { display: block; position: fixed; top: 0; left: 0; }
-#title {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; letter-spacing: 0.15em;
-  color: #00ff88; opacity: 0.17; pointer-events: none; z-index: 1;
-  text-transform: uppercase;
-}
-#links {
-  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
-  z-index: 2; display: flex; gap: 1.5rem; font-size: 0.9rem;
-}
-#links a {
-  color: #00ff88; text-decoration: none; opacity: 0.5;
-  transition: opacity 0.3s;
-}
-#links a:hover { opacity: 1; }
-#links span { color: #004d26; opacity: 0.4; }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="title">Signal26</div>
-<div id="links">
-  <a href="https://shiplint.com">ShipLint</a>
-  <span>·</span>
-  <a href="https://shippolicy.com">ShipPolicy</a>
-</div>
 <script>
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
@@ -64,7 +42,7 @@ function rgb(c) {
 }
 
 function draw() {
-  t += 0.003; // half speed
+  t += 0.003;
   const w = canvas.width, h = canvas.height;
   const maxR = Math.sqrt(w*w + h*h) * 0.75;
   const cx = w/2 + (mx - 0.5) * w * 0.08;
