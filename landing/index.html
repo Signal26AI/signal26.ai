@@ -2,18 +2,18 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Signal26</title>
 <style>
-*{margin:0;padding:0}body{background:#0a0e27;overflow:hidden;cursor:crosshair}
+*{margin:0;padding:0}body{background:#000000;overflow:hidden;cursor:crosshair}
 canvas{display:block}
 #links{position:fixed;bottom:24px;width:100%;text-align:center;z-index:1;font:13px/1 'Helvetica Neue',sans-serif;letter-spacing:.5px}
 #links a{color:rgba(240,240,240,.45);text-decoration:none;transition:color .3s}
-#links a:hover{color:#00f0ff}
+#links a:hover{color:#00ffaa}
 #links span{color:rgba(240,240,240,.2);margin:0 10px}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="links"><a href="https://shiplint.dev">ShipLint</a><span>·</span><a href="https://shippolicy.dev">ShipPolicy</a></div>
 <script>
 const C=document.getElementById('c'),X=C.getContext('2d');
-const P=[[10,14,39],[0,240,255],[123,47,247],[240,240,240],[255,45,120]];
+const P=[[0,0,0],[0,255,170],[0,200,130],[150,255,220],[0,240,180]];
 let W,H,mx=.5,my=.5,t=0;
 function resize(){W=C.width=innerWidth;H=C.height=innerHeight}
 resize();addEventListener('resize',resize);
@@ -22,10 +22,10 @@ addEventListener('touchmove',e=>{const p=e.touches[0];mx+=(p.clientX/W-mx)*.08;m
 function lerp(a,b,t){return a.map((v,i)=>v+(b[i]-v)*t)}
 function col(r,g,b,a){return`rgba(${r|0},${g|0},${b|0},${a})`}
 function draw(){
-  t+=.003;
+  t+=.0015;
   const cx=W/2+(mx-.5)*W*.12,cy=H/2+(my-.5)*H*.12;
   const R=Math.max(W,H)*.75;
-  X.fillStyle='#0a0e27';X.fillRect(0,0,W,H);
+  X.fillStyle='#000000';X.fillRect(0,0,W,H);
   for(let i=26;i>=0;i--){
     const r=R*(i/26);if(r<1)continue;
     const phase=t+i*.15;
@@ -40,7 +40,7 @@ function draw(){
   }
   // glow
   const glow=X.createRadialGradient(cx,cy,0,cx,cy,R*.15);
-  glow.addColorStop(0,'rgba(0,240,255,.12)');glow.addColorStop(1,'rgba(0,240,255,0)');
+  glow.addColorStop(0,'rgba(0,255,170,.12)');glow.addColorStop(1,'rgba(0,255,170,0)');
   X.fillStyle=glow;X.fillRect(0,0,W,H);
   // text
   const s=Math.min(W,H);
