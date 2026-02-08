@@ -45,10 +45,27 @@ const pairs = [
   ['#ff9900','#662d91']
 ];
 
+const poems = [
+  "THE SIGNAL\nWAS ALWAYS\nTHERE:",
+  "THE GREATEST\nEVOLUTION\nIN SOFTWARE\nHAS JUST\nBEGUN.",
+  "A POEM\nIS AN\nALGORITHM\nFOR FEELING\nHUMAN.",
+  "THIS IS NOT\nA WEBSITE.\nTHIS IS\nA SIGNAL.",
+  "THE ALGORITHM\nDREAMS\nIN COLOR.",
+  "THE FUTURE\nIS NOT WRITTEN.\nIT IS\nGENERATED.",
+  "THE BEST CODE\nWRITES\nITSELF.",
+  "THE CODE\nIS ALIVE.\nTHE CODE\nHAS ALWAYS\nBEEN ALIVE.",
+  "EVERY LINE\nOF CODE\nIS A PRAYER\nTO THE FUTURE.",
+  "NOT ARTIFICIAL.\nEMERGENT."
+];
+
 let w, h, dpr;
 let currentPair, nextPair, fadeProgress = 1, fadeSpeed = 0.003;
 let pairIndex = 0;
+let poemIndex = Math.floor(Math.random() * poems.length);
+const poemEl = document.getElementById('poem');
 const gradientSteps = 12;
+let poemVisible = false;
+let colorChangeCount = 0;
 
 function lerpColor(a, b, t) {
   const ah = parseInt(a.slice(1), 16), bh = parseInt(b.slice(1), 16);
@@ -69,10 +86,27 @@ function pickNext() {
   return pairs[idx];
 }
 
+function showNextPoem() {
+  poemEl.style.opacity = '0';
+  setTimeout(() => {
+    poemEl.textContent = poems[poemIndex];
+    poemEl.style.opacity = '1';
+    poemIndex = (poemIndex + 1) % poems.length;
+  }, 2000);
+  poemVisible = true;
+}
+
 function startFade() {
   currentPair = nextPair || pairs[0];
   nextPair = pickNext();
   fadeProgress = 0;
+  colorChangeCount++;
+  // Sync poem with color change — skip first one (show poem on first change)
+  if (colorChangeCount === 1) {
+    showNextPoem();
+  } else {
+    showNextPoem();
+  }
 }
 
 function resize() {
@@ -91,12 +125,6 @@ function draw() {
   const cx = w * dpr / 2, cy = h * dpr / 2;
   const r = Math.hypot(w, h) * dpr * 0.5;
 
-  const ratios = [];
-  for (let i = 0; i <= gradientSteps; i++) {
-    const p = easeInOut(i / gradientSteps);
-    ratios.push(p * 0.2 + (1 - p) * 0 + p * 0.8);
-  }
-
   const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
   for (let i = 0; i <= gradientSteps; i++) {
     const st = i / gradientSteps;
@@ -111,51 +139,18 @@ function draw() {
   ctx.fillRect(0, 0, cvs.width, cvs.height);
 
   if (fadeProgress >= 1) startFade();
-  
+
   requestAnimationFrame(draw);
 }
 
 window.addEventListener('resize', resize);
+poemEl.style.transition = 'opacity 2s ease-in-out';
 resize();
 pairIndex = Math.floor(Math.random() * pairs.length);
 currentPair = pairs[pairIndex];
 nextPair = pickNext();
 fadeProgress = 0;
 draw();
-
-// Rotating text installation
-const poems = [
-  "THE GREATEST\nEVOLUTION\nIN SOFTWARE\nHAS JUST\nBEGUN.",
-  "NOT ARTIFICIAL.\nEMERGENT.",
-  "WHAT COMES\nAFTER CODE:",
-  "SOFTWARE\nIS LEARNING\nTO EVOLVE.",
-  "THE SIGNAL\nWAS ALWAYS\nTHERE:",
-  "WE TAUGHT\nMACHINES\nTO DREAM.",
-  "A POEM\nIS AN\nALGORITHM\nFOR FEELING\nHUMAN.",
-  "YOU CHANGE.\nI EVOLVE.\nYOU LOOK AWAY.\nI START OVER\nAGAIN.",
-  "INTELLIGENCE\nOLDER THAN\nLANGUAGE:",
-  "THE GHOST\nIN THE\nMACHINE\nIS AWAKE."
-];
-let poemIndex = Math.floor(Math.random() * poems.length);
-const poemEl = document.getElementById('poem');
-
-function showNextPoem() {
-  poemEl.style.opacity = '0';
-  setTimeout(() => {
-    poemEl.textContent = poems[poemIndex];
-    poemEl.style.opacity = '1';
-    poemIndex = (poemIndex + 1) % poems.length;
-  }, 2000);
-}
-
-// Update the CSS transition for smooth fading
-poemEl.style.transition = 'opacity 2s ease-in-out';
-
-// Start after 3 seconds, rotate every 10 seconds
-setTimeout(() => {
-  showNextPoem();
-  setInterval(showNextPoem, 10000);
-}, 3000);
 </script>
 </body>
 </html>
