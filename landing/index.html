@@ -93,7 +93,8 @@ function draw() {
 
 window.addEventListener('resize', resize);
 resize();
-currentPair = pairs[0];
+pairIndex = Math.floor(Math.random() * pairs.length);
+currentPair = pairs[pairIndex];
 nextPair = pickNext();
 fadeProgress = 0;
 draw();
