@@ -1,0 +1,180 @@
+<!-- Inspired by the generative art of Rafael Rozendaal -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal26</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><defs><radialGradient id='g'><stop offset='0%25' stop-color='%234488ff'/><stop offset='100%25' stop-color='%23000'/></radialGradient></defs><circle cx='16' cy='16' r='14' fill='url(%23g)'/></svg>">
+<style>
+html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; background: #000; }
+canvas { display: block; width: 100%; height: 100%; }
+#poem {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Courier New', monospace;
+  font-size: clamp(24px, 5vw, 64px);
+  font-weight: bold;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 0 20px rgba(255,255,255,0.4), 0 0 40px rgba(255,255,255,0.2);
+  text-align: center;
+  text-transform: uppercase;
+  white-space: pre-line;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: 0.05em;
+}
+#contact {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  z-index: 1;
+}
+#contact a {
+  color: rgba(255,255,255,0.25);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+#contact a:hover {
+  color: rgba(255,255,255,0.6);
+}
+</style>
+</head>
+<body>
+<canvas></canvas>
+<div id="poem"></div>
+<div id="contact"><a href="mailto:hello@signal26.ai">hello@signal26.ai</a></div>
+<script>
+const cvs = document.querySelector('canvas');
+const ctx = cvs.getContext('2d');
+
+const pairs = [
+  ['#ff0000','#0000ff'],['#00ffff','#ff00ff'],['#ffff00','#00ff00'],
+  ['#ff00ff','#ffff00'],['#0000ff','#00ffff'],['#ff0000','#00ff00'],
+  ['#ffffff','#000000'],['#ed1e79','#29abe2'],['#7100bf','#00ffff'],
+  ['#ff9900','#662d91']
+];
+
+const poems = [
+  "THE SIGNAL\nWAS ALWAYS\nTHERE:",
+  "THE GREATEST\nEVOLUTION\nIN SOFTWARE\nHAS JUST\nBEGUN.",
+  "A POEM\nIS AN\nALGORITHM\nFOR FEELING\nHUMAN.",
+  "THIS IS NOT\nA WEBSITE.\nTHIS IS\nA SIGNAL.",
+  "THE ALGORITHM\nDREAMS\nIN COLOR.",
+  "THE FUTURE\nIS NOT WRITTEN.\nIT IS\nGENERATED.",
+  "THE BEST CODE\nWRITES\nITSELF.",
+  "THE CODE\nIS ALIVE.\nTHE CODE\nHAS ALWAYS\nBEEN ALIVE.",
+  "EVERY LINE\nOF CODE\nIS A PRAYER\nTO THE FUTURE.",
+  "NOT ARTIFICIAL.\nEMERGENT."
+];
+
+let w, h, dpr;
+let currentPair, nextPair, fadeProgress = 1, fadeSpeed = 0.002;
+let pairIndex = 0;
+let poemIndex = Math.floor(Math.random() * poems.length);
+const poemEl = document.getElementById('poem');
+const gradientSteps = 12;
+let poemVisible = false;
+let colorChangeCount = 0;
+
+function lerpColor(a, b, t) {
+  const ah = parseInt(a.slice(1), 16), bh = parseInt(b.slice(1), 16);
+  const ar = ah >> 16, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
+  const br = bh >> 16, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
+  const r = Math.round(ar + (br - ar) * t);
+  const g = Math.round(ag + (bg - ag) * t);
+  const b2 = Math.round(ab + (bb - ab) * t);
+  return '#' + ((r << 16) + (g << 8) + b2).toString(16).padStart(6, '0');
+}
+
+function easeInOut(t) { return t * t * (3 - 2 * t); }
+
+function pickNext() {
+  let idx;
+  do { idx = Math.floor(Math.random() * pairs.length); } while (idx === pairIndex);
+  pairIndex = idx;
+  return pairs[idx];
+}
+
+function showNextPoem() {
+  poemEl.style.opacity = '0';
+  setTimeout(() => {
+    poemEl.textContent = poems[poemIndex];
+    poemEl.style.opacity = '1';
+    poemIndex = (poemIndex + 1) % poems.length;
+  }, 2000);
+  poemVisible = true;
+}
+
+function startFade() {
+  currentPair = nextPair || pairs[0];
+  nextPair = pickNext();
+  fadeProgress = 0;
+  colorChangeCount++;
+  // Sync poem with color change — skip first one (show poem on first change)
+  if (colorChangeCount === 1) {
+    showNextPoem();
+  } else {
+    showNextPoem();
+  }
+}
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  w = window.innerWidth; h = window.innerHeight;
+  cvs.width = w * dpr; cvs.height = h * dpr;
+  cvs.style.width = w + 'px'; cvs.style.height = h + 'px';
+}
+
+function draw() {
+  fadeProgress = Math.min(1, fadeProgress + fadeSpeed);
+  const t = easeInOut(fadeProgress);
+  const c0 = lerpColor(currentPair[0], nextPair[0], t);
+  const c1 = lerpColor(currentPair[1], nextPair[1], t);
+
+  const cx = w * dpr / 2, cy = h * dpr / 2;
+  const r = Math.hypot(w, h) * dpr * 0.5;
+
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  for (let i = 0; i <= gradientSteps; i++) {
+    const st = i / gradientSteps;
+    const col = lerpColor(c0, c1, st);
+    grad.addColorStop(easeInOut(st), col);
+  }
+  grad.addColorStop(1, '#000000');
+
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+  if (fadeProgress >= 1) startFade();
+
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener('resize', resize);
+poemEl.style.transition = 'opacity 2s ease-in-out';
+resize();
+pairIndex = Math.floor(Math.random() * pairs.length);
+currentPair = pairs[pairIndex];
+nextPair = pickNext();
+fadeProgress = 0;
+draw();
+
+// Show first poem immediately
+poemEl.textContent = poems[poemIndex];
+poemIndex = (poemIndex + 1) % poems.length;
+requestAnimationFrame(() => { poemEl.style.opacity = '1'; });
+</script>
+</body>
+</html>
